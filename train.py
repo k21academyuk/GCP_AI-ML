@@ -4,14 +4,19 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 # Load the dataset from Google Cloud Storage or a local file path
-df = pd.read_csv('gs://<your-bucket-name>/iris.data', header=None, names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'class'])
+df = pd.read_csv('gs://<your-bucket-name>/iris.data', header=None, names=['Id', 'SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm', 'Species'])
+
+# Drop the 'Id' column as it is not needed for training
+df = df.drop(columns=['Id'])
 
 # Prepare the data
-X = df.drop('class', axis=1)
-y = df['class']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+X = df.drop('Species', axis=1)  # Features
+y = df['Species']  # Target variable
 
-# Train a random forest classifier
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train a Random Forest Classifier
 model = RandomForestClassifier()
 model.fit(X_train, y_train)
 
